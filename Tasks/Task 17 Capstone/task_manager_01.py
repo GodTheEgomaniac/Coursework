@@ -240,6 +240,7 @@ e - Exit
 
     elif menu == 'e':
         print('Goodbye!!!')
+        print("Idiot")
         exit()
 
     else:
