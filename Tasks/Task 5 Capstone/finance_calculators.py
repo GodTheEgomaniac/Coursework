@@ -22,7 +22,7 @@
 #else:
     #ask user to enter one of the two options
 
-import math
+import math 
 template="__________________________________\n\
 Deposit Total:          £{}\n\
 Interest Rate:          {}%\n\
