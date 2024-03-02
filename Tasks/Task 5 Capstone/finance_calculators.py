@@ -1,30 +1,32 @@
 from math import pow
 
+# - __Defining Functions and String Templates__
 def input_check(input):
     """Checks if user input is convertable to int or float"""
+    # First checks if input is int to prevent every int being assigned float
     if input.isnumeric():
         return int(input)
     elif input.replace(".","").isnumeric():
         return float(input)
-    else:
+    else:   # Returns input otherwise input would become NoneType
         return input
 
 def numeric_error():
     """Prints error message"""
-    ERROR_MARKER = "\t!!!\t"
+    ERROR_MARKER = "\t!!!\t"    # Noticable and easy to read markers
     print("\n{}Input must be a number{}\n".format(ERROR_MARKER,ERROR_MARKER))
 
 def ask_for_number(msg):
     """Asks for numeric input and handles potential errors"""
     while True:
-        temp_in = input("{}".format(msg))
-        temp_in = input_check(temp_in)
-        if type(temp_in) == str:
+        num_in = input("{}".format(msg))
+        num_in = input_check(num_in)
+        if type(num_in) == str:
             numeric_error()
             continue
         else:
             break
-    return temp_in
+    return num_in
 
 def calc_simple(deposit, i_APR, invest_duration):
     """Calculates simple interest"""
@@ -51,17 +53,17 @@ Interest Rate:\t{}%\n\
 Length of Bond:\t{} months\n\n\
 Repayment per month: £\t{}\n\
 __________________________________"
-
+# - __Main Body__
 print("investment - to calculate the amount of interest you'll \
 earn on your investment\nbond       - to calculate the \
 amount you'll have to pay on a home loan\n\nEnter either \
 'investment' or 'bond' from the menu above to proceed:")
-#Chose to print in one statement taking advantage of the backslash
+# Chose to print in one statement taking advantage of the backslash
 calculator = ""
 while calculator != "investment" and calculator != "bond":
-    calculator = input().lower()
+    calculator = input().lower() # Removes case sensitivity from input
 
-    # Investment Calculation
+    # - Investment Calculation
     if calculator == "investment":
         deposit = ask_for_number("Deposit Sum: £")
         i_APR = ask_for_number("Interest Rate(%): ")
@@ -85,7 +87,7 @@ while calculator != "investment" and calculator != "bond":
                 continue
 
 
-    # Bond Calculation
+    # - Bond Calculation
     elif calculator == "bond":
         house_value = ask_for_number("Value of Building: £")
         b_APR = ask_for_number("Interest Rate(%): ")
