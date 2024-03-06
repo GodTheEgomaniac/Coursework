@@ -46,14 +46,10 @@ def populate_inbox():
 def list_emails():
     """Displays list of emails using their subjects with a number"""
 
-    email_subjects = []
-    for i in inbox:
-        email_subjects.append(i.subject_line)
-    email_subjects = enumerate(email_subjects)
-
     print("Inbox: ")
-    for i in email_subjects:
-        print(str(i).strip(punctuation).replace(",", " ->").replace("'", ""))
+    # looping through list of tuples
+    for index, email in enumerate(inbox):
+        print(f"{index} -> {email.subject_line}")
 
 
 def read_email(index):
@@ -63,9 +59,10 @@ def read_email(index):
     index = input_check(index)
     if type(index) != int:
         return print(f"{ERROR_MARKER}Please enter a number{ERROR_MARKER}")
-    elif index > len(inbox):
+    elif index >= len(inbox):
         return print(f"{ERROR_MARKER}Please enter a number from the options listed{ERROR_MARKER}")
     
+    # Printing email
     print(f"""\nFrom {inbox[index].email_address}\t{inbox[index].subject_line}\n
 {inbox[index].email_content}
 """)
