@@ -9,9 +9,13 @@
 import os
 from datetime import datetime, date
 
+# CONSTANTS
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 ERR_MARK = "\t!!!\t"
+ERR_MSG = f"{ERR_MARK}Please enter a valid option{ERR_MARK}"
 
+
+# Functions Section
 def prnt_task(t):
         disp_str = f"Task: \t\t {t['title']}\n"
         disp_str += f"Assigned to: \t {t['username']}\n"
@@ -20,9 +24,24 @@ def prnt_task(t):
         disp_str += f"Task Description: \n {t['description']}\n"
         print(disp_str)
 
-# - __Menu_Options__ - #
+
+def get_due_date():
+    while True:
+        try:
+            task_due_date = input("Due date of task (YYYY-MM-DD): ")
+            due_date_time = datetime.strptime(task_due_date, DATETIME_STRING_FORMAT)
+            break
+
+        except ValueError:
+            print("Invalid datetime format. Please use the format specified")
+    return due_date_time
+
+
+    # - __MENU OPTIONS__ - #
 def reg_user():
     '''Add a new user to the user.txt file'''
+
+
     def w_user():
         """Writes a new user to user.txt"""
         with open("user.txt", "w") as out_file:
@@ -30,6 +49,7 @@ def reg_user():
             for k in username_password:
                 user_data.append(f"{k};{username_password[k]}")
             out_file.write("\n".join(user_data))
+
 
     def pass_check():
         """Check if new_password matches confirm_password"""
@@ -40,6 +60,7 @@ def reg_user():
             w_user()
         else: # Password Mismatch
             print("Passwords do not match")
+
            
     # - Request input of a new username
     unique = False
@@ -55,7 +76,6 @@ def reg_user():
                 else:
                     unique = True
 
-        
     # - Request input of a new password
     new_password = input("New Password: ")
 
@@ -134,45 +154,121 @@ def view_all():
 def view_mine(): # vm for short
     '''Reads the task from task.txt file and prints to the console in the 
     format of Output 2 presented in the task pdf (i.e. includes spacing
-    and labelling)
-    '''
+    and labelling)'''
+
     def vm_list():
         """Displays an enumerated list of tasks for logged-in user"""
-        print("\n")
+        print("Tasks assigned to you: ")
+        print("\n[-1] -> Returns to main menu")
         for enum, task in enumerate(task_list):
             if task['username'] == curr_user:
-                print(f"{enum} -> {task["title"]}")
+                print(f"[{enum}] -> {task["title"]}")
 
     
-    def vm_select(input):
-        """Displays a selected task in readable way"""
+    def vm_select(user_input):
+        """Selects a task to interact with"""
+        vm_list()
         # Error Checking
-        input = num_input_check(input)
-        if type(input) != int:
-            print(f"{ERR_MARK}Please enter a number{ERR_MARK}")
-            return "error"
-        elif input >= (len(task_list)):
-            print(f"{ERR_MARK}Please enter a number from the options listed{ERR_MARK}")
-            return "error"
+        user_input = menu_input_check(user_input, len(task_list))
+        # user_input = num_input_check(user_input)
+        # if type(user_input) != int:
+        #     print(f"{ERR_MARK}Please enter a number{ERR_MARK}")
+        #     return "error"
+        # elif user_input >= (len(task_list)):
+        #     print(f"{ERR_MARK}Please enter a number from the options listed{ERR_MARK}")
+        #     return "error"
         
-        #Printing the task
-        prnt_task(task_list[input])
+        # Next Step
+        read_edit_mark(task_list[user_input])
 
-    vm_list()
-    while vm_select(input("Input task-number to view: ")) == "error":
-        continue
-    input("Enter any character to return to menu ")
+
+    def read_edit_mark(task):
+        choice_list = ["1","2","3"]
+        choice = None
+        while choice not in choice_list:
+            print("\n[1] -> Read\n[2] -> Edit\n[3] -> Mark as Complete")
+            choice = input("Enter a number for the corresponding option: ")
+            if choice == "1":
+                prnt_task(task)
+            elif choice == "2":
+                # editing function
+                task_edit_menu()
+            elif choice == "3":
+                # mark as complete function
+                pass
+            else:
+                print(ERR_MSG)
+
+
+    def task_edit_menu(task):
+        def change_user(task):
+            print(f"Current user assigned is: {task["username"]}")
+            change = input("New Assignee: ")
+            with open("user.txt","r") as user_file:
+                for line in user_file:
+                    if change not in line.split(";"):
+                        print("User does not exist.")
+                    else:
+                        task["username"] = change
+                        print(f"Assignee changed to {change}.")
+
+
+        def change_task_date(task):
+            print(f"Current due date is: {task["due_date"]}")
+            task["due_date"] = get_due_date()
+            print("Due date of task updated.")
+            
+        # task_edit_menu MAIN BODY
+        print("\n[1] -> Change Assignee\n[2] -> Change Due Date")
+        choice = input("Enter a number for the corresponding option: ")
+        if choice == "1":
+            #change tasks user
+            change_user(task)
+        elif choice == "2":
+            #change tasks due date
+            change_task_date()
+        else:
+            print(ERR_MSG)
+    
+
+    # - __VM_MAIN_BODY__ - #
+    
+    vm_select(input("Input task-number: "))
+    # while True:
+    #     user_selection = input("Input task-number to view: ")
+    #     if user_selection == "-1":
+    #         break
+    #     else:
+    #         if vm_select(user_selection) == "error":
+    #             continue
+    #         input("Enter any character to return to menu ")
+    #         break
+
 
 # - __Misc_Methods__ - #
-def num_input_check(input):
+def num_input_check(num_input):
     """Checks if user input is convertable to int or float"""
     # First checks if input is int to prevent every int being assigned float
-    if input.isnumeric():
-        return int(input)
-    elif input.replace(".","").isnumeric():
-        return float(input)
+    if num_input.isnumeric():
+        return int(num_input)
+    elif num_input.replace(".","").isnumeric():
+        return float(num_input)
     else:   # Returns input. Otherwise input would become NoneType
-        return input
+        return num_input
+    
+def menu_input_check(user_input, menu_len):
+    """Standardisation of input menus"""
+    user_input = num_input_check(user_input)
+    if type(user_input) != int:
+        print(f"{ERR_MARK}Please enter a number{ERR_MARK}")
+        return "error"
+    elif user_input >= (menu_len):
+        print(f"{ERR_MARK}Please enter a number from the options listed{ERR_MARK}")
+        return "error"
+    elif user_input == -1:
+        return
+    else:
+        return user_input
 
 #___________MAIN_BODY_____________
 # Create tasks.txt if it doesn't exist
@@ -236,11 +332,10 @@ while not logged_in:
         print("Login Successful!")
         logged_in = True
 
-
+#====MENU SECTION====
 while True:
     # presenting the menu to the user and 
     # making sure that the user input is converted to lower case.
-    print()
     menu = input('''Select one of the following Options below:
 r - Registering a user
 a - Adding a task
