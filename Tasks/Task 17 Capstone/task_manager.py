@@ -103,16 +103,6 @@ def add_task():
     task_title = input("Title of Task: ")
     task_description = input("Description of Task: ")
     due_date_time = get_due_date()
-    # while True:
-    #     try:
-    #         task_due_date = input("Due date of task (YYYY-MM-DD): ")
-    #         due_date_time = datetime.strptime(task_due_date, DATETIME_STRING_FORMAT)
-    #         break
-
-    #     except ValueError:
-    #         print("Invalid datetime format. Please use the format specified")
-
-
     # Then get the current date.
     curr_date = date.today()
     ''' Add the data to the file task.txt and
@@ -184,8 +174,8 @@ def view_mine(): # vm for short
 
     def read_edit_mark(task):
         while True:
-            print("\nView My Tasks/Options: ")
-            print("[1]\t-> Read\n[2]\t-> Edit\n[3]\t-> Mark as Complete\n[-1]\t-> Go Back")
+            print("\nView My Tasks>Options: ")
+            print("[1]\t-> Read\n[2]\t-> Edit\n[3]\t-> Toggle Complete\n[-1]\t-> Go Back")
             user_input = input("Enter an option-number: ")
             user_input = menu_input_check(user_input, range(-1, 4))
             if user_input == 1:
@@ -193,16 +183,17 @@ def view_mine(): # vm for short
             elif user_input == 2:
                 task_edit_menu(task)
             elif user_input == 3:
-                # mark as complete function
-                pass
+                toggle_complete(task)
             elif user_input == -1:
                 break # Go Back
 
 
     def task_edit_menu(task):
+        """Menu for editing options"""
         def change_user(task):
+            """Changes tasks assignee"""
             while True:
-                print("\nView My Tasks/Options/Edit/Change Assignee: ")
+                print("\nView My Tasks>Options>Edit>Change Assignee: ")
                 print(f"Current user assigned is: {task["username"]}")
                 change = input("New Assignee: ")
                 if change in username_password:
@@ -210,12 +201,13 @@ def view_mine(): # vm for short
                     print(f"Assignee changed to {change}.")
                     break
                 else:
-                    print("User does not exist.")
+                    print("User does not exist. Remember Case Sensitivity.")
                     continue
 
 
         def change_task_date(task):
-            print("\nView My Tasks/Options/Edit/Change Due Date: ")
+            """Changes tasks date"""
+            print("\nView My Tasks>Options>Edit>Change Due Date: ")
             print(f"\nCurrent due date is: {task["due_date"]}")
             task["due_date"] = get_due_date()
             print("Due date of task updated.")
@@ -223,7 +215,7 @@ def view_mine(): # vm for short
             
         # task_edit_menu MAIN BODY
         while True:
-            print("\nView My Tasks/Options/Edit: ")
+            print("\nView My Tasks>Options>Edit: ")
             print("[1]\t-> Change Assignee\n[2]\t-> Change Due Date\n[-1]\t-> Go Back")
             user_input = input("Enter an option-number: ")
             user_input = menu_input_check(user_input, range(-1,3))
@@ -236,6 +228,17 @@ def view_mine(): # vm for short
             else:
                 print(ERR_MSG)
     
+
+    def toggle_complete(task):
+        """Toggles task 'complete' attribute"""
+        if task["completed"] == True:
+            task["completed"] == False
+            print("\nTask marked as INCOMPLETE.")
+
+        elif task["completed"] == False:
+            task["completed"] == True
+            print("\nTask marked as COMPLETE.")
+
 
     # - __VM_MAIN_BODY__ - #
     
