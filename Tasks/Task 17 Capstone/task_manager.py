@@ -232,18 +232,36 @@ def view_mine(): # vm for short
     def toggle_complete(task):
         """Toggles task 'complete' attribute"""
         if task["completed"] == True:
-            task["completed"] == False
+            task["completed"] = False
+            print(task["completed"])
             print("\nTask marked as INCOMPLETE.")
 
         elif task["completed"] == False:
-            task["completed"] == True
+            task["completed"] = True
+            print(task["completed"])
             print("\nTask marked as COMPLETE.")
 
 
-    # - __VM_MAIN_BODY__ - #
+    # view_mine MAIN BODY
     
     vm_select()
 
+
+def generate_reports():
+    with open("task_overview.txt", "w") as file:
+        tasks_gen = len(task_list)
+        tasks_complete = 0
+        tasks_uncomplete = 0
+        for t in task_list:
+            if t["complete"]:
+                tasks_complete += 1
+            else:
+                tasks_uncomplete += 1
+        
+        tasks_overdue = 0
+
+
+        pass
 
 # Misc Methods Section
 def num_input_check(num_input):
@@ -339,6 +357,7 @@ r - Registering a user
 a - Adding a task
 va - View all tasks
 vm - View my tasks
+gr - Generate reports
 ds - Display statistics
 e - Exit
 : ''').lower()
@@ -354,6 +373,9 @@ e - Exit
 
     elif menu == 'vm':
         view_mine()
+
+    elif menu == "gr":
+        pass
     
     elif menu == 'ds' and curr_user == 'admin': 
         '''If the user is an admin they can display statistics about number of users
